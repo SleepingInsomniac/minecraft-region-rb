@@ -34,6 +34,8 @@ module Nbt
     when 'Compound'    then Nbt::Compound.new(string)
     when 'Int_Array'   then Nbt::IntArray.new(string)
     when 'Long_Array'  then Nbt::LongArray.new(string)
+    else
+      raise "could not parse: #{string.bytes[0..50].inspect} ..."
     end
   end
 end

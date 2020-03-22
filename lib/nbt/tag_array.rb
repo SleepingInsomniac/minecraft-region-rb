@@ -6,20 +6,17 @@ module Nbt
       2 # in bytes
     end
 
+    def type_size
+      1 # byte
+    end
+
     def length
-      # Length is an int (4 bytes) after tag name
+      # Length is an integer of (length_size) after tag name
       @length ||= ::ByteArray.to_i(@tag_string.bytes[base_size..(base_size + (length_size - 1))])
     end
 
     def size
-      base_size + length
-    end
-
-    def payload
-      @payload ||= @tag_string
-        .bytes[(base_size + 1)..(base_size + length)]
-        .each_slice(length_size)
-        .map{ |bytes| ::ByteArray.to_i(bytes) }
+      base_size + length_size + (type_size * length)
     end
 
     def inspect

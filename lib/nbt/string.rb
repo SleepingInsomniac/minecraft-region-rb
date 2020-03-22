@@ -2,15 +2,20 @@
 
 module Nbt
   class String < TagArray
-    def payload
-      @payload ||= @tag_string
-        .bytes[(base_size + 2)..(base_size + 1 + length)]
-        .pack('C*')
-        .force_encoding('utf-8')
+    # Size of the number that describes payloads
+    def length_size
+      2
     end
 
-    def size
-      base_size + length_size + length
+    # Size of every payload item
+    def type_size
+      1 # byte
+    end
+
+    def payload
+      @payload ||= payload_bytes
+        .pack('C*')
+        .force_encoding('utf-8')
     end
   end
 end

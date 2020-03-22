@@ -48,6 +48,10 @@ module Nbt
         .strip
     end
 
+    def length_size
+      0
+    end
+
     def base_size
       3 + name_length
     end
@@ -66,6 +70,14 @@ module Nbt
                 raise "Undefined size for #{type}"
               end
       _size + base_size
+    end
+
+    def payload_bytes
+      @payload_bytes ||= raw.bytes[(base_size + length_size)..-1]
+    end
+
+    def payload
+      @payload ||= payload_bytes
     end
 
     def inspect
@@ -88,6 +100,10 @@ module Nbt
     def name_length
       return 0 if type == 'End'
       @name_length ||= ::ByteArray.to_i(@tag_string.bytes[1..2])
+    end
+
+    def raw
+      @tag_string = @tag_string.byteslice(0..(size - 1))
     end
   end
 end

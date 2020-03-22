@@ -2,7 +2,9 @@
 
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, 'lib')))
 
-require 'byebug'
+require 'bundler'
+Bundler.require
+
 require 'json'
 require 'region'
 
