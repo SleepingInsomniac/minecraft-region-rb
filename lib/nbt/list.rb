@@ -2,5 +2,6 @@
 
 module Nbt
   class List < Tag
+    # TODO
   end
 end

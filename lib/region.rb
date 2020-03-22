@@ -48,6 +48,8 @@ class Region
     compression_type = bytes(offset + 4) == [1] ? :gzip : :zlib
     compressed_nbt = chars((offset + 5)..(offset + 5 + chunk_length))
     raise "Can't uncompress chunk in GZip format" if compression_type == :gzip
+    # puts Zlib::Inflate.inflate(compressed_nbt).bytes.map{|b| b.to_s(16)}.join('')
+    # puts Zlib::Inflate.inflate(compressed_nbt)
     {
       offset: offset,
       chunk_length: chunk_length,

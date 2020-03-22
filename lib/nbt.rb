@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'nbt/tag'
+require 'nbt/tag_integer'
+require 'nbt/tag_array'
+
 require 'nbt/end'
 require 'nbt/byte'
 require 'nbt/short'

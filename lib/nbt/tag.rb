@@ -20,8 +20,11 @@ module Nbt
       12 => 'Long_Array',
     }
 
+    attr_reader :tag_string
+
     def initialize(tag_string)
       @tag_string = tag_string
+      puts "Init tag: <#{type}:#{name}>"
     end
 
     def parse
@@ -39,9 +42,10 @@ module Nbt
     def name
       return nil if type == 'End'
       @name ||= @tag_string
-        .bytes[3..(name_length + 3)]
+        .bytes[3..(name_length + 2)]
         .pack('C*')
         .force_encoding('utf-8')
+        .strip
     end
 
     def base_size
@@ -65,10 +69,21 @@ module Nbt
     end
 
     def inspect
-      "name: #{name&.strip}, type: #{type}"
+      "<#{type}:#{name&.strip} (#{size})>"
     end
 
-    private
+    def to_h
+      {
+        type: type,
+        name: name,
+        base_size: base_size,
+        children: children.map(&:to_h),
+      }
+    end
+
+    def children
+      []
+    end
 
     def name_length
       return 0 if type == 'End'

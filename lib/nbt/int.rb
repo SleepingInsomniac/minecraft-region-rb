@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 module Nbt
-  class Int < Tag
+  class Int < TagInteger
   end
 end

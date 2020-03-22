@@ -7,7 +7,7 @@ module Nbt
     end
 
     def inspect
-      "type: #{type}"
+      "<#{type}>"
     end
   end
 end
