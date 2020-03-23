@@ -3,7 +3,11 @@
 module Nbt
   class ByteArray < TagArray
     def length_size
-      1 # in bytes
+      4 # integer
+    end
+
+    def type_size
+      1 # byte
     end
   end
 end

@@ -24,7 +24,6 @@ module Nbt
 
     def initialize(tag_string)
       @tag_string = tag_string
-      puts "Init tag: <#{type}:#{name}>"
     end
 
     def parse
@@ -81,20 +80,15 @@ module Nbt
     end
 
     def inspect
-      "<#{type}:#{name&.strip} (#{size})>"
+      "<#{type}:#{name&.strip}>"
     end
 
     def to_h
       {
         type: type,
         name: name,
-        base_size: base_size,
-        children: children.map(&:to_h),
+        payload: payload
       }
-    end
-
-    def children
-      []
     end
 
     def name_length

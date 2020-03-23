@@ -2,6 +2,10 @@
 
 module Nbt
   class Compound < Tag
+    def length
+      children.length
+    end
+
     def children
       return @children if @children
       @children = []
@@ -15,12 +19,20 @@ module Nbt
       @children
     end
 
+    def payload
+      children
+    end
+
     def size
       @size ||= (base_size + children.map(&:size).reduce(:+))
     end
 
+    def to_h
+      super.merge({ length: length, payload: children.map(&:to_h) })
+    end
+
     def inspect
-      "#{super}\n#{children.map{|c| "    #{c.inspect}"}.join("\n")}"
+      "#{super} (length: #{length})\n#{children.map{|c| "    #{c.inspect}"}.join("\n")}"
     end
   end
 end

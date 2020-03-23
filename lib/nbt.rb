@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'nbt/tag'
-require 'nbt/tag_integer'
+require 'nbt/tag_numeric'
 require 'nbt/tag_array'
 
 require 'nbt/end'
@@ -35,7 +35,7 @@ module Nbt
     when 'Int_Array'   then Nbt::IntArray.new(string)
     when 'Long_Array'  then Nbt::LongArray.new(string)
     else
-      raise "could not parse: #{string.bytes[0..50].inspect} ..."
+      raise "could not parse: #{string.bytes[0..50].inspect} (first 50 bytes)..."
     end
   end
 end

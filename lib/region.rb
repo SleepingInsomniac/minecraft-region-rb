@@ -25,7 +25,7 @@ class Region
         offset: ByteArray.to_i(loc_bytes[0..2]),
         sector_count: loc_bytes[3]
       }
-    end
+    end.reject{ |l| l[:offset] == 0 }
   end
 
   # Timestamps are 4 bytes
@@ -33,7 +33,7 @@ class Region
   def timestamps
     @timestamps ||= bytes[T_BYTES].each_slice(4).map do |t_bytes|
       ByteArray.to_i(t_bytes)
-    end
+    end.reject{ |t| t == 0 }
   end
 
   # | 0 -3              | 4                | 5...                             |
@@ -41,21 +41,20 @@ class Region
   # Compression types: "GZip (RFC1952)" : 1
   #                    "Zlib (RFC1950)" : 2
   def chunk(location)
-    # Zlib::Inflate.inflate(data_compressed)
     offset = C_BYTES + location[:offset]
     offset = location[:offset] * (1024 * 4) # 4KiB
     chunk_length = ByteArray.to_i(bytes(offset..(offset + 3)))
     compression_type = bytes(offset + 4) == [1] ? :gzip : :zlib
     compressed_nbt = chars((offset + 5)..(offset + 5 + chunk_length))
     raise "Can't uncompress chunk in GZip format" if compression_type == :gzip
-    # puts Zlib::Inflate.inflate(compressed_nbt).bytes.map{|b| b.to_s(16)}.join('')
-    # puts Zlib::Inflate.inflate(compressed_nbt)
-    {
-      offset: offset,
+    return nil if offset == 0 # Not created
+    Chunk.new(
+      nbt: Nbt::parse(Zlib::Inflate.inflate(compressed_nbt)),
+      offset: location[:offset],
+      byte_offset: offset,
       chunk_length: chunk_length,
-      compression: compression_type,
-      nbt: Nbt::parse(Zlib::Inflate.inflate(compressed_nbt))
-    }
+      compression_type: compression_type,
+    )
   end
 
   private # ===============================================

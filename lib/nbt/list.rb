@@ -34,10 +34,19 @@ module Nbt
       @children
     end
 
+    def payload
+      children
+    end
+
+    def to_h
+      super.merge({ payload: children.map(&:to_h) })
+    end
+
     def size
       # base_size + 1 byte (ids) + 4 bytes (length) + children sizes
       children_size = if children.any?
-                        children.map(&:size).reduce(:+)
+                        # -3, since 1 byte for type, 2 for name length which is 0
+                        children.map{ |c| c.size - 3 }.reduce(:+)
                       else
                         0
                       end
@@ -45,7 +54,7 @@ module Nbt
     end
 
     def inspect
-      "#{super}\n#{children.map{|c| "    #{c.inspect}"}.join("\n")}"
+      "#{super} (length: #{length})\n#{children.map{|c| "    #{c.inspect}"}.join("\n")}"
     end
   end
 end

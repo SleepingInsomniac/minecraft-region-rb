@@ -19,8 +19,12 @@ module Nbt
       base_size + length_size + (type_size * length)
     end
 
+    def to_h
+      super.merge({ length: length })
+    end
+
     def inspect
-      "#{super} (#{length}) #{payload}"
+      "#{super} (length: #{length})"
     end
   end
 end

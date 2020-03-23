@@ -17,5 +17,9 @@ module Nbt
         .pack('C*')
         .force_encoding('utf-8')
     end
+
+    def inspect
+      "#{super} : \"#{payload}\""
+    end
   end
 end
