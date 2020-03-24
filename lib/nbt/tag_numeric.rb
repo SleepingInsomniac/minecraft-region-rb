@@ -8,9 +8,7 @@ module Nbt
 
     def payload
       return @payload if @payload
-      mask_bytes = [0b0111].concat(Array.new(type_size - 1){ 0b1111 })
-      mask = ::ByteArray.to_i(mask_bytes)
-      value = raw_value & mask
+      value = raw_value[1..-1]
       value *= -1 if sign
       @payload = value
     end
