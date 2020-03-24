@@ -11,5 +11,6 @@ require 'region'
 r = Region.new('test_data/r.0.0.mca')
 
 chunk = r.chunk(r.locations.first)
-puts chunk.inspect
 puts chunk.nbt.inspect
+# puts chunk.nbt.tag_string.bytes[0..40].map{|b| b.to_s(16) }
+# puts chunk.nbt.tag_string.bytes.map{|b| b.to_s(16)}.join('')

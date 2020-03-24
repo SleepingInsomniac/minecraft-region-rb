@@ -3,6 +3,9 @@
 require 'byte_array'
 
 module Nbt
+  # The first byte in a tag is the tag type (ID)
+  # followed by a two byte big-endian unsigned integer for the length of the name
+  # then the name as a string in UTF-8 format
   class Tag
     TAG_TYPES = {
       0  => 'End',
@@ -22,8 +25,13 @@ module Nbt
 
     attr_reader :tag_string
 
+    # Via unpack:
+    #   C # 8 bit, tag_id
+    #   S # 16 bit, short unsigned name_length
+
     def initialize(tag_string)
       @tag_string = tag_string
+      # puts "Init tag: #{type}:#{name}"
     end
 
     def parse
@@ -41,8 +49,7 @@ module Nbt
     def name
       return nil if type == 'End'
       @name ||= @tag_string
-        .bytes[3..(name_length + 2)]
-        .pack('C*')
+        .byteslice(3..(name_length + 2))
         .force_encoding('utf-8')
         .strip
     end
@@ -93,7 +100,7 @@ module Nbt
 
     def name_length
       return 0 if type == 'End'
-      @name_length ||= ::ByteArray.to_i(@tag_string.bytes[1..2])
+      @name_length ||= @tag_string.byteslice(1..2).unpack("S>").first
     end
 
     def raw
